@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace Extensions.Logging.InMemory
 {
@@ -6,5 +7,6 @@ namespace Extensions.Logging.InMemory
         LogLevel LogLevel,
         EventId EventId,
         string Message,
-        string? OriginalFormat);
+        string? OriginalFormat,
+        Dictionary<string, object> Properties);
 }

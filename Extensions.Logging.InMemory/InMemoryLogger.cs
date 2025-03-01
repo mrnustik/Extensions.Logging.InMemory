@@ -19,20 +19,15 @@ namespace Extensions.Logging.InMemory
             Exception exception,
             Func<TState, Exception, string> formatter)
         {
-            string? originalFormat = null;
-            if (state is IReadOnlyList<KeyValuePair<string, object>> properties)
-            {
-                originalFormat = properties
-                                 .SingleOrDefault(s => s.Key == "{OriginalFormat}")
-                                 .Value?
-                                 .ToString();
-            }
-
+            var properties = (state as IReadOnlyList<KeyValuePair<string, object>>)
+                             ?.ToDictionary(t => t.Key, t => t.Value)
+                             ?? new Dictionary<string, object>();
             _entries.Add(new LoggedEntry(
                              logLevel,
                              eventId,
                              formatter(state, exception),
-                             originalFormat));
+                             properties.GetValueOrDefault("{OriginalFormat}")?.ToString(),
+                             properties));
         }
 
         public bool IsEnabled(LogLevel logLevel)
