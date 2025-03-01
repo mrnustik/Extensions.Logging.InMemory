@@ -26,6 +26,7 @@ namespace Extensions.Logging.InMemory
                              logLevel,
                              eventId,
                              formatter(state, exception),
+                             exception,
                              properties.GetValueOrDefault("{OriginalFormat}")?.ToString(),
                              properties));
         }
