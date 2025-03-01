@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 
 namespace Extensions.Logging.InMemory
@@ -18,10 +19,20 @@ namespace Extensions.Logging.InMemory
             Exception exception,
             Func<TState, Exception, string> formatter)
         {
+            string? originalFormat = null;
+            if (state is IReadOnlyList<KeyValuePair<string, object>> properties)
+            {
+                originalFormat = properties
+                                 .SingleOrDefault(s => s.Key == "{OriginalFormat}")
+                                 .Value?
+                                 .ToString();
+            }
+
             _entries.Add(new LoggedEntry(
                              logLevel,
                              eventId,
-                             formatter(state, exception)));
+                             formatter(state, exception),
+                             originalFormat));
         }
 
         public bool IsEnabled(LogLevel logLevel)

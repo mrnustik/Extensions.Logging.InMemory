@@ -17,10 +17,10 @@ public class InMemoryLoggerTests
         await Assert.That(logger.LoggedEntries)
                     .HasSingleItem()
                     .And
-                    .Contains(loggedEntry =>
-                                  loggedEntry.LogLevel == LogLevel.Information &&
-                                  loggedEntry.EventId == 0 &&
-                                  loggedEntry.FormattedMessage == "Test");
+                    .Contains(entry =>
+                                  entry.LogLevel == LogLevel.Information &&
+                                  entry.EventId == 0 &&
+                                  entry.FormattedMessage == "Test");
     }
 
     [Test]
@@ -44,6 +44,67 @@ public class InMemoryLoggerTests
         await Assert.That(logger.LoggedEntries)
                     .HasSingleItem()
                     .And
-                    .Contains(new LoggedEntry(logLevel, eventId, message));
+                    .Contains(entry =>
+                                  entry.LogLevel == logLevel &&
+                                  entry.EventId == eventId &&
+                                  entry.FormattedMessage == message);
+    }
+
+    [Test]
+    public async Task Log_WithStructuredLog_EntryHasFormattedMessage()
+    {
+        // Arrange
+        var logger = new InMemoryLogger<InMemoryLoggerTests>();
+        var intValue = 42;
+        var stringValue = "Test";
+
+        // Act
+        logger.LogInformation("Tested structured log message {String} {Int}", stringValue, intValue);
+
+        // Assert
+        await Assert.That(logger.LoggedEntries)
+                    .HasSingleItem()
+                    .And
+                    .Contains(entry =>
+                                  entry.LogLevel == LogLevel.Information &&
+                                  entry.FormattedMessage == "Tested structured log message Test 42");
+    }
+
+    [Test]
+    public async Task Log_WithStructuredLog_EntryHasOriginalFormat()
+    {
+        // Arrange
+        var logger = new InMemoryLogger<InMemoryLoggerTests>();
+        var intValue = 42;
+        var stringValue = "Test";
+
+        // Act
+        logger.LogInformation("Tested structured log message {String} {Int}", stringValue, intValue);
+
+        // Assert
+        await Assert.That(logger.LoggedEntries)
+                    .HasSingleItem()
+                    .And
+                    .Contains(entry =>
+                                  entry.LogLevel == LogLevel.Information &&
+                                  entry.OriginalFormat == "Tested structured log message {String} {Int}");
+    }
+
+    [Test]
+    public async Task Log_WithBasicTextLog_EntryHasNullOriginalFormat()
+    {
+        // Arrange
+        var logger = new InMemoryLogger<InMemoryLoggerTests>();
+
+        // Act
+        logger.LogInformation("Test Log");
+
+        // Assert
+        await Assert.That(logger.LoggedEntries)
+                    .HasSingleItem()
+                    .And
+                    .Contains(entry =>
+                                  entry.LogLevel == LogLevel.Information &&
+                                  entry.OriginalFormat == null);
     }
 }
