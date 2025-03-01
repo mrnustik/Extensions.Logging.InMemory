@@ -5,6 +5,17 @@ namespace Extensions.Logging.InMemory.Tests;
 public class InMemoryLoggerTests
 {
     [Test]
+    public async Task LogEntries_WithNoLogOperations_IsEmpty()
+    {
+        // Arrange & Act
+        var logger = new InMemoryLogger<InMemoryLoggerTests>();
+
+        // Assert
+        await Assert.That(logger.LoggedEntries)
+                    .IsEmpty();
+    }
+
+    [Test]
     public async Task Log_WithBasicTextLoggedViaExtensionMethod_Should_BeAddedToLogEntries()
     {
         // Arrange
