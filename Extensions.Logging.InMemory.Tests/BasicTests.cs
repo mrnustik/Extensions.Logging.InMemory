@@ -5,7 +5,7 @@ namespace Extensions.Logging.InMemory.Tests;
 public class BasicTests
 {
     [Test]
-    public async Task LogEntries_WithNoLogOperations_IsEmpty()
+    public async Task LogEntries_WithNoLogOperations_ShouldBeEmpty()
     {
         // Arrange & Act
         var logger = new InMemoryLogger<BasicTests>();
@@ -16,7 +16,7 @@ public class BasicTests
     }
 
     [Test]
-    public async Task Log_WithBasicTextLoggedViaExtensionMethod_Should_BeAddedToLogEntries()
+    public async Task Log_WithBasicTextLoggedViaExtensionMethod_ShouldBeAddedToLogEntries()
     {
         // Arrange
         var logger = new InMemoryLogger<BasicTests>();
@@ -45,7 +45,7 @@ public class BasicTests
     [Arguments(LogLevel.Warning)]
     [Arguments(LogLevel.Error)]
     [Arguments(LogLevel.Critical)]
-    public async Task LogViaDefaultLogMethod_Should_HaveExpectedLogEntries(LogLevel logLevel)
+    public async Task Log_WithSpecificLogLevel_ShouldHaveExpectedLogLevel(LogLevel logLevel)
     {
         // Arrange
         var logger = new InMemoryLogger<BasicTests>();
@@ -67,6 +67,32 @@ public class BasicTests
                         .IsEqualTo(eventId);
             await Assert.That(loggedEntry.Message)
                         .IsEqualTo("Test");
+        }
+    }
+
+    [Test]
+    public async Task Log_WithException_ShouldHaveException()
+    {
+        // Arrange
+        var logger = new InMemoryLogger<BasicTests>();
+        var message = "Message";
+        var exception = new Exception("Test");
+
+        // Act
+        logger.LogInformation(exception, message);
+
+        // Assert
+        await Assert.That(logger.LoggedEntries)
+                    .HasSingleItem();
+        using (Assert.Multiple())
+        {
+            var loggedEntry = logger.LoggedEntries.Single();
+            await Assert.That(loggedEntry.LogLevel)
+                        .IsEqualTo(LogLevel.Information);
+            await Assert.That(loggedEntry.Message)
+                        .IsEqualTo(message);
+            await Assert.That(loggedEntry.Exception)
+                        .IsEqualTo(exception);
         }
     }
 }
