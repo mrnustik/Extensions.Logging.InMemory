@@ -5,7 +5,7 @@ namespace Extensions.Logging.InMemory.Tests;
 public class InMemoryLoggerTests
 {
     [Test]
-    public async Task BasicTextLog_LoggedViaExtensionMethod_Should_BeAddedToLogEntries()
+    public async Task Log_WithBasicTextLoggedViaExtensionMethod_Should_BeAddedToLogEntries()
     {
         // Arrange
         var logger = new InMemoryLogger<InMemoryLoggerTests>();
@@ -15,12 +15,16 @@ public class InMemoryLoggerTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .HasSingleItem()
-                    .And
-                    .Contains(entry =>
-                                  entry.LogLevel == LogLevel.Information &&
-                                  entry.EventId == 0 &&
-                                  entry.FormattedMessage == "Test");
+                    .HasSingleItem();
+
+        using (Assert.Multiple())
+        {
+            var loggedEntry = logger.LoggedEntries.Single();
+            await Assert.That(loggedEntry.LogLevel)
+                        .IsEqualTo(LogLevel.Information);
+            await Assert.That(loggedEntry.Message)
+                        .IsEqualTo("Test");
+        }
     }
 
     [Test]
@@ -42,12 +46,17 @@ public class InMemoryLoggerTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .HasSingleItem()
-                    .And
-                    .Contains(entry =>
-                                  entry.LogLevel == logLevel &&
-                                  entry.EventId == eventId &&
-                                  entry.FormattedMessage == message);
+                    .HasSingleItem();
+        using (Assert.Multiple())
+        {
+            var loggedEntry = logger.LoggedEntries.Single();
+            await Assert.That(loggedEntry.LogLevel)
+                        .IsEqualTo(logLevel);
+            await Assert.That(loggedEntry.EventId)
+                        .IsEqualTo(eventId);
+            await Assert.That(loggedEntry.Message)
+                        .IsEqualTo("Test");
+        }
     }
 
     [Test]
@@ -63,11 +72,15 @@ public class InMemoryLoggerTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .HasSingleItem()
-                    .And
-                    .Contains(entry =>
-                                  entry.LogLevel == LogLevel.Information &&
-                                  entry.FormattedMessage == "Tested structured log message Test 42");
+                    .HasSingleItem();
+        using (Assert.Multiple())
+        {
+            var loggedEntry = logger.LoggedEntries.Single();
+            await Assert.That(loggedEntry.LogLevel)
+                        .IsEqualTo(LogLevel.Information);
+            await Assert.That(loggedEntry.Message)
+                        .IsEqualTo("Tested structured log message Test 42");
+        }
     }
 
     [Test]
@@ -83,11 +96,15 @@ public class InMemoryLoggerTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .HasSingleItem()
-                    .And
-                    .Contains(entry =>
-                                  entry.LogLevel == LogLevel.Information &&
-                                  entry.OriginalFormat == "Tested structured log message {String} {Int}");
+                    .HasSingleItem();
+        using (Assert.Multiple())
+        {
+            var loggedEntry = logger.LoggedEntries.Single();
+            await Assert.That(loggedEntry.LogLevel)
+                        .IsEqualTo(LogLevel.Information);
+            await Assert.That(loggedEntry.OriginalFormat)
+                        .IsEqualTo("Tested structured log message {String} {Int}");
+        }
     }
 
     [Test]
@@ -101,10 +118,14 @@ public class InMemoryLoggerTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .HasSingleItem()
-                    .And
-                    .Contains(entry =>
-                                  entry.LogLevel == LogLevel.Information &&
-                                  entry.OriginalFormat == null);
+                    .HasSingleItem();
+        using (Assert.Multiple())
+        {
+            var loggedEntry = logger.LoggedEntries.Single();
+            await Assert.That(loggedEntry.LogLevel)
+                        .IsEqualTo(LogLevel.Information);
+            await Assert.That(loggedEntry.OriginalFormat)
+                        .IsEqualTo("Test Log");
+        }
     }
 }

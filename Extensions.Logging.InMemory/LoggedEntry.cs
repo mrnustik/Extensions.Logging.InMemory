@@ -5,6 +5,6 @@ namespace Extensions.Logging.InMemory
     public record LoggedEntry(
         LogLevel LogLevel,
         EventId EventId,
-        string FormattedMessage,
+        string Message,
         string? OriginalFormat);
 }
