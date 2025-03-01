@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="TUnit" Version="0.15.30" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Extensions.Logging.InMemory\Extensions.Logging.InMemory.csproj" />
+    </ItemGroup>
+
+</Project>
