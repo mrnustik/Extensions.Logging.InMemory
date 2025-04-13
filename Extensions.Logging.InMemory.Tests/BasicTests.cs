@@ -12,7 +12,7 @@ public class BasicTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .IsEmpty();
+            .IsEmpty();
     }
 
     [Test]
@@ -26,16 +26,14 @@ public class BasicTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .HasSingleItem();
-
-        using (Assert.Multiple())
-        {
-            var loggedEntry = logger.LoggedEntries.Single();
-            await Assert.That(loggedEntry.LogLevel)
-                        .IsEqualTo(LogLevel.Information);
-            await Assert.That(loggedEntry.Message)
-                        .IsEqualTo("Test");
-        }
+            .HasSingleItem();
+        var loggedEntry = logger.LoggedEntries.Single();
+        await Assert.That(loggedEntry)
+            .IsPartiallyEquivalentTo(new
+            {
+                LogLevel = LogLevel.Information,
+                Message = "Test"
+            });
     }
 
     [Test]
@@ -49,7 +47,7 @@ public class BasicTests
     {
         // Arrange
         var logger = new InMemoryLogger<BasicTests>();
-        var eventId = 42;
+        EventId eventId = 42;
         var message = "Test";
 
         // Act
@@ -57,17 +55,15 @@ public class BasicTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .HasSingleItem();
-        using (Assert.Multiple())
-        {
-            var loggedEntry = logger.LoggedEntries.Single();
-            await Assert.That(loggedEntry.LogLevel)
-                        .IsEqualTo(logLevel);
-            await Assert.That(loggedEntry.EventId)
-                        .IsEqualTo(eventId);
-            await Assert.That(loggedEntry.Message)
-                        .IsEqualTo("Test");
-        }
+            .HasSingleItem();
+        var loggedEntry = logger.LoggedEntries.Single();
+        await Assert.That(loggedEntry)
+            .IsPartiallyEquivalentTo(new
+            {
+                LogLevel = logLevel,
+                EventId = eventId,
+                Message = message
+            });
     }
 
     [Test]
@@ -83,16 +79,14 @@ public class BasicTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .HasSingleItem();
-        using (Assert.Multiple())
-        {
-            var loggedEntry = logger.LoggedEntries.Single();
-            await Assert.That(loggedEntry.LogLevel)
-                        .IsEqualTo(LogLevel.Information);
-            await Assert.That(loggedEntry.Message)
-                        .IsEqualTo(message);
-            await Assert.That(loggedEntry.Exception)
-                        .IsEqualTo(exception);
-        }
+            .HasSingleItem();
+        var loggedEntry = logger.LoggedEntries.Single();
+        await Assert.That(loggedEntry)
+            .IsPartiallyEquivalentTo(new
+            {
+                LogLevel = LogLevel.Information,
+                Message = message,
+                Exception = exception
+            });
     }
 }

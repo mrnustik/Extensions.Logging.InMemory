@@ -17,15 +17,14 @@ public class StructuredLogTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .HasSingleItem();
-        using (Assert.Multiple())
-        {
-            var loggedEntry = logger.LoggedEntries.Single();
-            await Assert.That(loggedEntry.LogLevel)
-                        .IsEqualTo(LogLevel.Information);
-            await Assert.That(loggedEntry.Message)
-                        .IsEqualTo("Tested structured log message Test 42");
-        }
+            .HasSingleItem();
+        var loggedEntry = logger.LoggedEntries.Single();
+        await Assert.That(loggedEntry)
+            .IsPartiallyEquivalentTo(new
+            {
+                LogLevel = LogLevel.Information,
+                Message = "Tested structured log message Test 42"
+            });
     }
 
     [Test]
@@ -41,19 +40,18 @@ public class StructuredLogTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .HasSingleItem();
-        using (Assert.Multiple())
-        {
-            var loggedEntry = logger.LoggedEntries.Single();
-            await Assert.That(loggedEntry.LogLevel)
-                        .IsEqualTo(LogLevel.Information);
-            await Assert.That(loggedEntry.OriginalFormat)
-                        .IsEqualTo("Tested structured log message {String} {Int}");
-        }
+            .HasSingleItem();
+        var loggedEntry = logger.LoggedEntries.Single();
+        await Assert.That(loggedEntry)
+            .IsPartiallyEquivalentTo(new
+            {
+                LogLevel = LogLevel.Information,
+                OriginalFormat = "Tested structured log message {String} {Int}"
+            });
     }
 
     [Test]
-    public async Task Log_WithBasicTextLog_EntryHasNullOriginalFormat()
+    public async Task Log_WithBasicTextLog_EntryHasOriginalFormat()
     {
         // Arrange
         var logger = new InMemoryLogger<StructuredLogTests>();
@@ -63,15 +61,14 @@ public class StructuredLogTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .HasSingleItem();
-        using (Assert.Multiple())
-        {
-            var loggedEntry = logger.LoggedEntries.Single();
-            await Assert.That(loggedEntry.LogLevel)
-                        .IsEqualTo(LogLevel.Information);
-            await Assert.That(loggedEntry.OriginalFormat)
-                        .IsEqualTo("Test Log");
-        }
+            .HasSingleItem();
+        var loggedEntry = logger.LoggedEntries.Single();
+        await Assert.That(loggedEntry)
+            .IsPartiallyEquivalentTo(new
+            {
+                LogLevel = LogLevel.Information,
+                OriginalFormat = "Test Log"
+            });
     }
 
     [Test]
@@ -87,17 +84,20 @@ public class StructuredLogTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .HasSingleItem();
-        using (Assert.Multiple())
-        {
-            var loggedEntry = logger.LoggedEntries.Single();
-            await Assert.That(loggedEntry.LogLevel)
-                        .IsEqualTo(LogLevel.Information);
-            await Assert.That(loggedEntry.Properties)
-                        .Contains(new KeyValuePair<string, object>("String", stringValue))
-                        .And
-                        .Contains(new KeyValuePair<string, object>("Int", intValue));
-        }
+            .HasSingleItem();
+        var loggedEntry = logger.LoggedEntries.Single();
+        await Assert.That(loggedEntry)
+            .IsPartiallyEquivalentTo(
+                new
+                {
+                    LogLevel = LogLevel.Information,
+                    Properties = new Dictionary<string, object>
+                    {
+                        { "String", stringValue },
+                        { "Int", intValue },
+                        { "{OriginalFormat}", "Tested structured log message {String} {Int}" }
+                    }
+                });
     }
 
     [Test]
@@ -114,15 +114,18 @@ public class StructuredLogTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .HasSingleItem();
-        using (Assert.Multiple())
-        {
-            var loggedEntry = logger.LoggedEntries.Single();
-            await Assert.That(loggedEntry.LogLevel)
-                        .IsEqualTo(LogLevel.Information);
-            await Assert.That(loggedEntry.Properties)
-                        .Contains(p => p.Key == "@DecomposableObject" && p.Value.Equals(decomposableObject));
-        }
+            .HasSingleItem();
+        var loggedEntry = logger.LoggedEntries.Single();
+        await Assert.That(loggedEntry)
+            .IsPartiallyEquivalentTo(new
+            {
+                LogLevel = LogLevel.Information,
+                Properties = new Dictionary<string, object>
+                {
+                    { "@DecomposableObject", decomposableObject },
+                    { "{OriginalFormat}", "Tested structured log message {@DecomposableObject}" }
+                }
+            });
     }
 
     [Test]
@@ -137,17 +140,20 @@ public class StructuredLogTests
 
         // Assert
         await Assert.That(logger.LoggedEntries)
-                    .HasSingleItem();
-        using (Assert.Multiple())
-        {
-            var loggedEntry = logger.LoggedEntries.Single();
-            await Assert.That(loggedEntry.LogLevel)
-                        .IsEqualTo(LogLevel.Information);
-            await Assert.That(loggedEntry.Message)
-                        .IsEqualTo("Tested structured log message 2000");
-            await Assert.That(loggedEntry.Properties)
-                        .Contains(new KeyValuePair<string, object>("DateTime", dateTime));
-        }
+            .HasSingleItem();
+        var loggedEntry = logger.LoggedEntries.Single();
+        await Assert.That(loggedEntry)
+            .IsPartiallyEquivalentTo(new
+            {
+                LogLevel = LogLevel.Information,
+                Message = "Tested structured log message 2000",
+                OriginalFormat = "Tested structured log message {DateTime:yyyy}",
+                Properties = new Dictionary<string, object>
+                {
+                    { "DateTime", dateTime },
+                    { "{OriginalFormat}", "Tested structured log message {DateTime:yyyy}" }
+                }
+            });
     }
 
     [Test]
@@ -163,22 +169,22 @@ public class StructuredLogTests
         await Assert
             .That(logger.LoggedEntries)
             .HasSingleItem();
-        using (Assert.Multiple())
-        {
-            var loggedEntry = logger.LoggedEntries.Single();
-            await Assert.That(loggedEntry.LogLevel)
-                .IsEqualTo(LogLevel.Information);
-            await Assert.That(loggedEntry.EventId)
-                .IsEqualTo(42);
-            await Assert.That(loggedEntry.OriginalFormat)
-                .IsEqualTo("Tested structured log message {StringValue} {IntValue}");
-            await Assert.That(loggedEntry.Properties)
-                .Contains(new KeyValuePair<string, object>("StringValue", "Something"))
-                .And
-                .Contains(new KeyValuePair<string,object>("IntValue", 666));
-        }
+        var loggedEntry = logger.LoggedEntries.Single();
+        await Assert.That(loggedEntry)
+            .IsPartiallyEquivalentTo(new
+            {
+                LogLevel = LogLevel.Information,
+                EventId = (EventId)42,
+                OriginalFormat = "Tested structured log message {StringValue} {IntValue}",
+                Properties = new Dictionary<string, object>()
+                {
+                    { "StringValue", "Something" },
+                    { "IntValue", 666 },
+                    { "{OriginalFormat}", "Tested structured log message {StringValue} {IntValue}" }
+                }
+            });
     }
-    
+
     public record DecomposableObject(string String, int Int);
 }
 
