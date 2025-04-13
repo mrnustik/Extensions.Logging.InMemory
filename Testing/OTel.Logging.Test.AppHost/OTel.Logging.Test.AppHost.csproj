@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Sdk Name="Aspire.AppHost.Sdk" Version="9.2.0"/>
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <UserSecretsId>9477dcc0-2a10-47d9-9b6e-08e6778fe8d9</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="9.2.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\OTel.Logging.Test.App\OTel.Logging.Test.App.csproj" />
+    </ItemGroup>
+
+</Project>
