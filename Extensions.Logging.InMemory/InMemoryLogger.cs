@@ -53,7 +53,7 @@ namespace Extensions.Logging.InMemory
 
         private static Dictionary<string, object> CollectLogProperties<TState>(TState state)
         {
-            var logProperties = (state as IReadOnlyList<KeyValuePair<string, object>>)
+            var logProperties = (state as IEnumerable<KeyValuePair<string, object>>)
                                 ?.ToDictionary(t => t.Key, t => t.Value)
                                 ?? new Dictionary<string, object>();
             return logProperties;
