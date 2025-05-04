@@ -12,7 +12,7 @@ An in-memory logged implementation for Microsoft.Extensions.Logging logger desig
  - Scope properties
  - Source-generated logs
 
-## Sample usage:
+## Sample usage
 
 ```csharp
 public class ClassTests
