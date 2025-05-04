@@ -5,13 +5,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Extensions.Logging.InMemory
 {
+    /// <inheritdoc />
     public class InMemoryLogger<T> : ILogger<T>
     {
         private readonly List<LoggedEntry> _entries = new();
         private readonly IExternalScopeProvider _scopeProvider = new LoggerExternalScopeProvider();
 
+        /// <summary>
+        /// Readonly collection of logged entries
+        /// </summary>
         public IReadOnlyCollection<LoggedEntry> LoggedEntries => _entries.AsReadOnly();
 
+        /// <inheritdoc />
         public void Log<TState>(
             LogLevel logLevel,
             EventId eventId,
@@ -31,11 +36,13 @@ namespace Extensions.Logging.InMemory
                              properties));
         }
 
+        /// <inheritdoc />
         public bool IsEnabled(LogLevel logLevel)
         {
             return logLevel != LogLevel.None;
         }
 
+        /// <inheritdoc />
         public IDisposable BeginScope<TState>(TState state)
         {
             return _scopeProvider.Push(state);
