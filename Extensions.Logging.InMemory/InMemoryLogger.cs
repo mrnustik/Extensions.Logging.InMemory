@@ -21,8 +21,8 @@ namespace Extensions.Logging.InMemory
             LogLevel logLevel,
             EventId eventId,
             TState state,
-            Exception exception,
-            Func<TState, Exception, string> formatter)
+            Exception? exception,
+            Func<TState, Exception?, string> formatter)
         {
             var scopeProperties = CollectScopeProperties();
             var logProperties = CollectLogProperties(state);
@@ -45,7 +45,8 @@ namespace Extensions.Logging.InMemory
         }
 
         /// <inheritdoc />
-        public IDisposable BeginScope<TState>(TState state)
+        public IDisposable? BeginScope<TState>(TState state)
+            where TState : notnull
         {
             return _scopeProvider.Push(state);
         }
