@@ -27,13 +27,15 @@ namespace Extensions.Logging.InMemory
             var scopeProperties = CollectScopeProperties();
             var logProperties = CollectLogProperties(state);
             var properties = CombineProperties(scopeProperties, logProperties);
-            _entries.Add(new LoggedEntry(
-                             logLevel,
-                             eventId,
-                             formatter(state, exception),
-                             exception,
-                             properties.GetValueOrDefault("{OriginalFormat}")?.ToString(),
-                             properties));
+            _entries.Add(new LoggedEntry
+            {
+                LogLevel = logLevel,
+                EventId = eventId,
+                Message = formatter.Invoke(state, exception),
+                Exception = exception,
+                OriginalFormat = properties.GetValueOrDefault("{OriginalFormat}")?.ToString(),
+                Properties = properties
+            });
         }
 
         /// <inheritdoc />
