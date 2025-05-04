@@ -1,5 +1,9 @@
 # Extensions.Logging.InMemory
 
+[![publish](https://github.com/mrnustik/Extensions.Logging.InMemory/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/mrnustik/Extensions.Logging.InMemory/actions/workflows/dotnet.yml)
+[![NuGet Version](https://img.shields.io/nuget/v/Extensions.Logging.InMemory)](https://www.nuget.org/packages/Extensions.Logging.InMemory/)
+![GitHub License](https://img.shields.io/github/license/mrnustik/Extensions.Logging.InMemory)
+
 An in-memory logged implementation for Microsoft.Extensions.Logging logger designed for use in tests.
 
 ## Supported features
